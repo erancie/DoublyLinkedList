@@ -135,11 +135,10 @@ namespace DoublyLinkedList
         }
 
         // TODO: Your task is to implement all the remaining methods.
-        // Read the instruction carefully, study the code examples from above as they should help you to write the rest of the code.
+        // Read the instruction carefully, study the code examples 
+        // from above as they should help you to write the rest of the code.
 
-
-
-        public INode<T> AddFirst(T value) //use AddBetween
+        public INode<T> AddFirst(T value) //new----- //use AddBetween
         {
             throw new NotImplementedException();
 
