@@ -13,7 +13,7 @@ namespace DoublyLinkedList
             public Node<K> Next { get; set; }
             public Node<K> Previous { get; set; }
 
-            public Node(K value, Node<K> previous, Node<K> next)
+            public Node(K value, Node<K> previous, Node<K> next) //Node<K> constructor
             {
                 Value = value;
                 Previous = previous;
@@ -48,7 +48,7 @@ namespace DoublyLinkedList
         private Node<T> Tail { get; set; }
         public int Count { get; private set; } = 0;
 
-        public DoublyLinkedList()
+        public DoublyLinkedList() // constructor
         {
             Head = new Node<T>(default(T), null, null);
             Tail = new Node<T>(default(T), Head, null);
@@ -76,7 +76,7 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
-            if (node_current.Previous == null || node_current.Next == null) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
+            // if (node_current.Previous == null || node_current.Next == null) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
             if (node_current.Previous.Equals(Head)) return null;
             else return node_current.Previous;
         }
@@ -84,14 +84,9 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
-            if (node_current.Previous == null || node_current.Next == null) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
+            if (node_current.Previous == null || node_current.Next == null) throw new InvalidOperationException("The node referred as 'After' is no longer in the list");
             if (node_current.Next.Equals(Tail)) return null;
             else return node_current.Next;
-        }
-
-        public INode<T> AddLast(T value)
-        {
-            return AddBetween(value, Tail.Previous, Tail);
         }
 
         // This is a private method that creates a new node and inserts it in between the two given nodes referred as the previous and the next.
@@ -134,29 +129,36 @@ namespace DoublyLinkedList
             return s.ToString();
         }
 
+        public INode<T> AddLast(T value)
+        {
+            return AddBetween(value, Tail.Previous, Tail);
+        }
+
         // TODO: Your task is to implement all the remaining methods.
-        // Read the instruction carefully, study the code examples 
-        // from above as they should help you to write the rest of the code.
 
-        public INode<T> AddFirst(T value) //new----- //use AddBetween
+        public INode<T> AddFirst(T value) //new----- 
         {
-            throw new NotImplementedException();
-
-            // return AddBetween(value, Head, Head.Next); //**TO FIX
-
+            return AddBetween(value, Head, Head.Next); 
         }
 
-        public INode<T> AddBefore(INode<T> before, T value) //try AddBetween?
+        public INode<T> AddBefore(INode<T> node, T value) 
         {
-            throw new NotImplementedException();
-            //** TO FIX
-            // return AddBetween(value, Before(before.Previous), Before(before.Next));
-
+            Node<T> current = node as Node<T>;
+            if (current == null) 
+            {
+                return AddFirst(value);
+            }
+            return AddBetween(value, (Node<T>)Before(current.Previous), current); 
         }
 
-        public INode<T> AddAfter(INode<T> after, T value) //try AddBetween?
+        public INode<T> AddAfter(INode<T> node, T value) 
         {
-            throw new NotImplementedException();
+            Node<T> current = node as Node<T>;
+            if (current == null) 
+            {
+                return AddLast(value);
+            }
+            return AddBetween(value, (Node<T>)After(current.Next), current); 
         }
 
         // Removes all nodes from the DoublyLinkedList<T>. 
@@ -165,50 +167,40 @@ namespace DoublyLinkedList
                 // nodes must be nullified.  
         public void Clear()
         {
-            // while (Count > 0) //**TO FIX
-            // {
-            //     RemoveLast();
-            // }
-            // Console.WriteLine("Clear() Finished");
+            while (Count > 0)
+            {
+                RemoveLast();
+            }
+            Console.WriteLine("Clear() Finished");
         }
 
         public void Remove(INode<T> node) //**TO FIX
         {
-            if (node == null) throw new NullReferenceException();//check if node is null
-            //If the node specified as argument does not exist in the DoublyLinkedList<T>,
-                //the method throws the InvalidOperationException.
-            // if(Find(node.Value)=null) throw new InvalidOperationException(); 
-
+            if (node == null) throw new ArgumentNullException();//check if node is null
+            //If the node specified as argument does not exist in the DoublyLinkedList<T>, the method throws the InvalidOperationException.
+            if(Find(node.Value)==null) throw new InvalidOperationException(); //TO FIX?
             // Remove the specified node from the DoublyLinkedList<T>.
-
-            // INode<T> before = node.Previous; //return node before
-            // INode<T> after = node.Next; //return node after
-
-            // // INode<T> before = Before(node); //return node before
-            // // INode<T> after = After(node); //return node after
-
-            // before.Next = after;
-            // after.Previous = before;
-            // Count--;
-
-
-            // Before(node.Next) = After(node.Previous);
-            // After(node.Previous) = Before(node.Next);
+            Node<T> current = node as Node<T>;
+            Node<T> before = current.Previous; 
+            Node<T> after = current.Next; 
+            before.Next = after;
+            after.Previous = before;
+            Count--;
         }
 
         public void RemoveFirst()
         {
-            if (Count == 0) throw new InvalidOperationException();//choose
+            // if (Count == 0) throw new InvalidOperationException();//choose
             if (isEmpty()) throw new InvalidOperationException();           
             Remove(After(Head));
-            Count--;
+            // Count--;
         }
 
         public void RemoveLast()
         {
             if (isEmpty()) throw new InvalidOperationException();           
             Remove(Before(Tail));
-            Count--;
+            // Count--;
         }
 
         //----other methods
