@@ -76,7 +76,8 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
-            // if (node_current.Previous == null || node_current.Next == null) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
+            if (node_current.Previous == null ) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
+            // if(Find(node.Value))
             if (node_current.Previous.Equals(Head)) return null;
             else return node_current.Previous;
         }
@@ -84,7 +85,7 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
-            if (node_current.Previous == null || node_current.Next == null) throw new InvalidOperationException("The node referred as 'After' is no longer in the list");
+            if (node_current.Next == null) throw new InvalidOperationException("The node referred as 'After' is no longer in the list");
             if (node_current.Next.Equals(Tail)) return null;
             else return node_current.Next;
         }
@@ -143,11 +144,17 @@ namespace DoublyLinkedList
 
         public INode<T> AddBefore(INode<T> node, T value) 
         {
+                    Console.WriteLine("ADD BEFORE CALL");
             Node<T> current = node as Node<T>;
             if (current == null) 
             {
+                Console.WriteLine("null REF");
                 return AddFirst(value);
             }
+            Console.WriteLine(value);
+            Console.WriteLine(current.Previous);
+            Console.WriteLine(current);
+
             return AddBetween(value, (Node<T>)Before(current.Previous), current); 
         }
 
@@ -169,8 +176,14 @@ namespace DoublyLinkedList
         {
             while (Count > 0)
             {
+                // Node<T> last = Last as Node<T>;
+                // last.Next = null;
+                // last.Previous = null;
                 RemoveLast();
             }
+            // Head = null;
+            // Tail = null;
+
             Console.WriteLine("Clear() Finished");
         }
 
@@ -192,15 +205,14 @@ namespace DoublyLinkedList
         {
             // if (Count == 0) throw new InvalidOperationException();//choose
             if (isEmpty()) throw new InvalidOperationException();           
+            // Remove(After((INode<T>)Head));
             Remove(After(Head));
-            // Count--;
         }
 
         public void RemoveLast()
         {
             if (isEmpty()) throw new InvalidOperationException();           
             Remove(Before(Tail));
-            // Count--;
         }
 
         //----other methods
