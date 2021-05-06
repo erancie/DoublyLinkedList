@@ -77,7 +77,6 @@ namespace DoublyLinkedList
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
             if (node_current.Previous == null ) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
-            // if(Find(node.Value))
             if (node_current.Previous.Equals(Head)) return null;
             else return node_current.Previous;
         }
@@ -136,7 +135,6 @@ namespace DoublyLinkedList
         }
 
         // TODO: Your task is to implement all the remaining methods.
-
         public INode<T> AddFirst(T value) //new----- 
         {
             return AddBetween(value, Head, Head.Next); 
@@ -144,18 +142,12 @@ namespace DoublyLinkedList
 
         public INode<T> AddBefore(INode<T> node, T value) 
         {
-                    Console.WriteLine("ADD BEFORE CALL");
             Node<T> current = node as Node<T>;
             if (current == null) 
             {
-                Console.WriteLine("null REF");
                 return AddFirst(value);
             }
-            Console.WriteLine(value);
-            Console.WriteLine(current.Previous);
-            Console.WriteLine(current);
-
-            return AddBetween(value, (Node<T>)Before(current.Previous), current); 
+            return AddBetween(value, current.Previous, current); 
         }
 
         public INode<T> AddAfter(INode<T> node, T value) 
@@ -165,25 +157,15 @@ namespace DoublyLinkedList
             {
                 return AddLast(value);
             }
-            return AddBetween(value, (Node<T>)After(current.Next), current); 
+            return AddBetween(value, current, current.Next); 
         }
 
-        // Removes all nodes from the DoublyLinkedList<T>. 
-            // Count is set to zero. 
-            // For each of the nodes, links to the previous and the next 
-                // nodes must be nullified.  
         public void Clear()
         {
             while (Count > 0)
             {
-                // Node<T> last = Last as Node<T>;
-                // last.Next = null;
-                // last.Previous = null;
                 RemoveLast();
             }
-            // Head = null;
-            // Tail = null;
-
             Console.WriteLine("Clear() Finished");
         }
 
