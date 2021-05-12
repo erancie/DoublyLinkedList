@@ -20,9 +20,6 @@ namespace DoublyLinkedList
                 Next = next;
             }
 
-            // This is a ToString() method for the Node<K>
-            // It represents a node as a tuple {'the previous node's value'-(the node's value)-'the next node's value')}. 
-            // 'XXX' is used when the current node matches the First or the Last of the DoublyLinkedList<T>
             public override string ToString()
             {
                 StringBuilder s = new StringBuilder();
@@ -38,12 +35,6 @@ namespace DoublyLinkedList
 
         }
 
-        // Here is where the description of the methods and attributes of the DoublyLinkedList<T> class starts
-
-        // An important aspect of the DoublyLinkedList<T> is the use of two auxiliary nodes: the Head and the Tail. 
-        // The both are introduced in order to significantly simplify the implementation of the class and make insertion functionality reduced just to a AddBetween(...)
-        // These properties are private, thus are invisible to a user of the data structure, but are always maintained in it, even when the DoublyLinkedList<T> is formally empty. 
-        // Remember about this crucial fact when you design and code other functions of the DoublyLinkedList<T> in this task.
         private Node<T> Head { get; set; }
         private Node<T> Tail { get; set; }
         public int Count { get; private set; } = 0;
@@ -84,13 +75,13 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
+            // Error in if clause - only .Next not || node.Prev
             if (node_current.Next == null) throw new InvalidOperationException("The node referred as 'After' is no longer in the list");
             if (node_current.Next.Equals(Tail)) return null;
             else return node_current.Next;
         }
 
-        // This is a private method that creates a new node and inserts it in between the two given nodes referred as the previous and the next.
-        // Use it when you wish to insert a new value (node) into the DoublyLinkedList<T>
+        //Use this to insert values within the DLL
         private Node<T> AddBetween(T value, Node<T> previous, Node<T> next)
         {
             Node<T> node = new Node<T>(value, previous, next);
@@ -142,21 +133,16 @@ namespace DoublyLinkedList
 
         public INode<T> AddBefore(INode<T> node, T value) 
         {
-            Node<T> current = node as Node<T>;
-            if (current == null) 
-            {
-                return AddFirst(value);
-            }
-            return AddBetween(value, current.Previous, current); 
+            Node<T> current = node as Node<T>; //cast to node
+            if (current == null) return AddFirst(value);  //check if first
+            // return AddBetween(value, (Node<T>)Before(current.Previous), current); //BUG**
+            return AddBetween(value, current.Previous, current); //if not use AddBetween
         }
 
         public INode<T> AddAfter(INode<T> node, T value) 
         {
             Node<T> current = node as Node<T>;
-            if (current == null) 
-            {
-                return AddLast(value);
-            }
+            if (current == null) return AddLast(value);
             return AddBetween(value, current, current.Next); 
         }
 
@@ -173,28 +159,38 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new ArgumentNullException();//check if node is null
             //If the node specified as argument does not exist in the DoublyLinkedList<T>, the method throws the InvalidOperationException.
-            if(Find(node.Value)==null) throw new InvalidOperationException(); //TO FIX?
+            if(Find(node.Value)==null) throw new InvalidOperationException();//*** TO FIX w/o Find()
+            
             // Remove the specified node from the DoublyLinkedList<T>.
-            Node<T> current = node as Node<T>;
-            Node<T> before = current.Previous; 
+            Node<T> current = node as Node<T>; //cast to Node<T>
+            Node<T> before = current.Previous; //create before and after nodes
             Node<T> after = current.Next; 
-            before.Next = after;
+            before.Next = after; //re-point nodes from either side
             after.Previous = before;
-            Count--;
+            
+            //check
+                // if ( head == node) {
+                //     head = node.next;
+                // }
+            
+            //invalidate
+            // list = null;
+            // next = null;
+            // prev = null;
+
+            Count--; // decrement Count
         }
 
         public void RemoveFirst()
         {
-            // if (Count == 0) throw new InvalidOperationException();//choose
             if (isEmpty()) throw new InvalidOperationException();           
-            // Remove(After((INode<T>)Head));
-            Remove(After(Head));
+            Remove(After(Head)); //remove first node after head
         }
 
         public void RemoveLast()
         {
             if (isEmpty()) throw new InvalidOperationException();           
-            Remove(Before(Tail));
+            Remove(Before(Tail)); //remove first node before Tail
         }
 
         //----other methods
