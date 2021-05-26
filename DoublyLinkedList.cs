@@ -135,7 +135,6 @@ namespace DoublyLinkedList
         {
             Node<T> current = node as Node<T>; //cast to node
             if (current == null) return AddFirst(value);  //check if first
-            // return AddBetween(value, (Node<T>)Before(current.Previous), current); //BUG**
             return AddBetween(value, current.Previous, current); //if not use AddBetween
         }
 
@@ -148,11 +147,25 @@ namespace DoublyLinkedList
 
         public void Clear()
         {
-            while (Count > 0)
+            Node<T> current = Head; //start at head
+            while (current != null) //loop over until null
             {
-                RemoveLast();
+                Node<T> temp = current; //place curr as temp node
+                current = current.Next; //move current to next node
+                nullify(temp); //nullify temp references
             }
+            //relink empty list
+            Head.Next = Tail;
+            Tail.Previous = Head;
+            //set count of list nodes to 0
+            Count = 0;
             Console.WriteLine("Clear() Finished");
+        }
+
+        private void nullify(Node<T> node){
+            node.Previous = null;
+            node.Next = null;
+            // node.Value = default(T);
         }
 
         public void Remove(INode<T> node) //**TO FIX
@@ -167,17 +180,6 @@ namespace DoublyLinkedList
             Node<T> after = current.Next; 
             before.Next = after; //re-point nodes from either side
             after.Previous = before;
-            
-            //check
-                // if ( head == node) {
-                //     head = node.next;
-                // }
-            
-            //invalidate
-            // list = null;
-            // next = null;
-            // prev = null;
-
             Count--; // decrement Count
         }
 
