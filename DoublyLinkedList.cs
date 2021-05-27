@@ -63,11 +63,11 @@ namespace DoublyLinkedList
                 else return Tail.Previous;
             }
         }
-        public INode<T> Before(INode<T> node) //new--------
+        public INode<T> Before(INode<T> node)
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
-            if (node_current.Previous == null ) throw new InvalidOperationException("The node referred as 'before' is no longer in the list");
+            if (node_current.Previous == null ) throw new InvalidOperationException("The node referred as 'Before' is no longer in the list");
             if (node_current.Previous.Equals(Head)) return null;
             else return node_current.Previous;
         }
@@ -75,7 +75,6 @@ namespace DoublyLinkedList
         {
             if (node == null) throw new NullReferenceException();
             Node<T> node_current = node as Node<T>;
-            // Error in if clause - only .Next not || node.Prev
             if (node_current.Next == null) throw new InvalidOperationException("The node referred as 'After' is no longer in the list");
             if (node_current.Next.Equals(Tail)) return null;
             else return node_current.Next;
@@ -126,7 +125,7 @@ namespace DoublyLinkedList
         }
 
         // TODO: Your task is to implement all the remaining methods.
-        public INode<T> AddFirst(T value) //new----- 
+        public INode<T> AddFirst(T value)
         {
             return AddBetween(value, Head, Head.Next); 
         }
@@ -168,17 +167,24 @@ namespace DoublyLinkedList
             // node.Value = default(T);
         }
 
-        public void Remove(INode<T> node) //**TO FIX
-        {
-            if (node == null) throw new ArgumentNullException();//check if node is null
-            //If the node specified as argument does not exist in the DoublyLinkedList<T>, the method throws the InvalidOperationException.
-            if(Find(node.Value)==null) throw new InvalidOperationException();//*** TO FIX w/o Find()
+            // Check if nodes before and after node to be removed are not null,
+            // if so, the node passed in by the tester is not in the DLL.
+            // if (current.Previous == null || current.Next == null) throw new InvalidOperationException();
             
+            // Check if the DLL class structure object references (prev & next) point back 
+            // to the current node. If not, the node is not in the DLL.
+            // if(current.Previous.Next != current || current.Next.Previous != current) throw new InvalidOperationException("Node doesn't exist in DLL");
+        public void Remove(INode<T> node)
+        {
+            if (node == null) throw new ArgumentNullException();//check if node is valid
+            Node<T> current = node as Node<T>; // cast to Node<T>
+            // Check if node prev/next are not null and that the DLL object refernces prev and next can be used to point back to the node being removed.
+            if(current.Previous == null || current.Previous.Next != current) throw new InvalidOperationException("Node not in DLL");
+            if(current.Next == null || current.Next.Previous != current) throw new InvalidOperationException("Node not in DLL");
             // Remove the specified node from the DoublyLinkedList<T>.
-            Node<T> current = node as Node<T>; //cast to Node<T>
             Node<T> before = current.Previous; //create before and after nodes
             Node<T> after = current.Next; 
-            before.Next = after; //re-point nodes from either side
+            before.Next = after; //re-point nodes from either side to each other
             after.Previous = before;
             Count--; // decrement Count
         }
